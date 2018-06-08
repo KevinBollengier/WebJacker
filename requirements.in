@@ -4,6 +4,8 @@ click==6.7
 dnspython==1.15.0
 first==2.0.1
 idna==2.6
+impacket==0.9.16.dev0
+liac-arff==2.1.1
 pip-tools==2.0.2
 requests==2.18.4
 six==1.11.0

@@ -33,8 +33,7 @@ try:
     functions.dns_dump(url, 'MX')
     functions.dns_dump(url, 'HINFO')
     print('****************** Port Scan ******************')
-    remote_server_ip = socket.gethostbyname(url)
-    functions.simple_portscan(remote_server_ip, 1025)
+    functions.simple_portscan(url, 1025)
     print('***********************************************')
 except KeyboardInterrupt:
     print("[*] User requested an interrupt")
