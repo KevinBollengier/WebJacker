@@ -3,7 +3,7 @@ from socket import *
 from typing import *
 
 
-def dns_dump(url: str, record: str):
+def dns_dump(url, record):
     """
     Function that queries DNS records based on url and the type of record provided in the parameters
     :param url: the url that needs to be queried
@@ -17,7 +17,8 @@ def dns_dump(url: str, record: str):
         return "\t{dns_record} : No information.".format(dns_record=record)
 
 
-def simple_portscan(url, port_range: int)->List[str]:
+
+def simple_portscan(url, port_range):
     """
     Simple portscan to see if a port is open
     :param url: host to be scanned
