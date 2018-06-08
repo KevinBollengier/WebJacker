@@ -22,6 +22,7 @@ def simple_portscan(url, port_range: int)->List[str]:
     Simple portscan to see if a port is open
     :param url: host to be scanned
     :param port_range: max ports to be scanned
+    :return List of strings containing open ports.
     """
     # TODO Multithreading for performance
     # TODO make port_range dynamic
