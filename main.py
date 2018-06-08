@@ -4,8 +4,7 @@ import sys
 import functions
 
 try:
-    print("Enter website to test:")
-    url = input()
+    url = raw_input("Enter website to test:")
 
     r = requests.get(url="http://" + url)
     print('****************** General Information ******************')
