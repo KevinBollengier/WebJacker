@@ -28,6 +28,7 @@ try:
         print("\t" + header + " : " + r.headers[header])
     print('****************** DNS Dump ******************')
     functions.dns_dump(url, 'CNAME')
+    functions.dns_dump(url, 'SOA')
     functions.dns_dump(url, 'A')
     functions.dns_dump(url, 'NS')
     functions.dns_dump(url, 'MX')
