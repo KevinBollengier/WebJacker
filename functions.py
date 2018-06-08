@@ -17,7 +17,6 @@ def dns_dump(url, record):
         return "\t{dns_record} : No information.".format(dns_record=record)
 
 
-
 def simple_portscan(url, port_range):
     """
     Simple portscan to see if a port is open

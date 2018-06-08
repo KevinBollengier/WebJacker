@@ -10,7 +10,7 @@ import functions
 try:
     report_output = []
 
-    url = raw_input("Enter website to test:")
+    url = input("Enter website to test:")
 
     r = requests.get(url="http://" + url)
     report_output.append('# W3bJ4ck3r Report - ' + url)
