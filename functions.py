@@ -22,20 +22,14 @@ def simple_portscan(url, port_range: int):
     :param url: host to be scanned
     :param port_range: max ports to be scanned
     """
+    # TODO Multithreading for performance
+    # TODO make port_range dynamic
     remote_host_ip = gethostbyname(url)
     print("Scanning: " + str(remote_host_ip))
-    for port in range(20, 27):
+    for port in range(20, 1025):
         s = socket(AF_INET, SOCK_STREAM)
         s.settimeout(0.05)
         result = s.connect_ex((remote_host_ip, port))
         if result == 0:
             print("[*]\tPort {port}: OPEN".format(port=port))
         s.close()
-    # s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # for port in range(1, int(port_range)):
-    #     s.settimeout(10)
-    #     rcode = s.connect_ex((ip, port))
-    #     s.settimeout(None)
-    #     if rcode == 0:
-    #         print('[*]\tPort {port}: Open.'.format(port=port))
-    # s.close()
