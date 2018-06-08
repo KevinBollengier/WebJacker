@@ -3,6 +3,10 @@ import socket
 import sys
 import functions
 
+# TODO refactor to commandline arguments
+# TODO refactor static file name
+# TODO make program more verbose
+# TODO clean up code
 try:
     print("Enter website to test:")
     url = input()

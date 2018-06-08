@@ -40,7 +40,7 @@ def simple_portscan(url, port_range: int)->List[str]:
 
 
 def print_to_md_file(text: List[str]):
-    file = open("test.md", "a")
+    file = open("test.md", "w")
     for line in text:
         file.write(line+"\n")
     file.close()
