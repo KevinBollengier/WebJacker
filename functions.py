@@ -24,6 +24,7 @@ def simple_portscan(url, port_range: int):
     """
     # TODO Multithreading for performance
     # TODO make port_range dynamic
+    # TODO map ports to relating services in output
     remote_host_ip = gethostbyname(url)
     print("Scanning: " + str(remote_host_ip))
     for port in range(20, 1025):
