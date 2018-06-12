@@ -1,6 +1,7 @@
 import dns.resolver
 from socket import *
 from typing import *
+from port_list import PortList
 
 
 def dns_dump(url, record):
@@ -15,9 +16,11 @@ def dns_dump(url, record):
             return "\t{dns_record} : ".format(dns_record=record) + str(cname_record)
     except dns.resolver.NoAnswer:
         return "\t{dns_record} : No information.".format(dns_record=record)
+    except dns.resolver.NoNameservers:
+        return "\tShit happened."
 
 
-def simple_portscan(url, port_range):
+def simple_portscan(url):
     """
     Simple portscan to see if a port is open
     :param url: host to be scanned
@@ -25,17 +28,17 @@ def simple_portscan(url, port_range):
     :return List of strings containing open ports.
     """
     # TODO Multithreading for performance
-    # TODO make port_range dynamic
-    # TODO map ports to relating services in output
     remote_host_ip = gethostbyname(url)
+    port_list = PortList()
+    port_dict = port_list.get_port_dict()
     print("Scanning: " + str(remote_host_ip))
     open_ports = []
-    for port in range(20, 1025):
+    for port, service in port_dict.items():
         s = socket(AF_INET, SOCK_STREAM)
         s.settimeout(0.05)
         result = s.connect_ex((remote_host_ip, port))
         if result == 0:
-            open_ports.append("Port {port}: OPEN".format(port=port))
+            open_ports.append("Port {port}: \t open    {service}".format(port=port, service=service))
         s.close()
     return open_ports
 
