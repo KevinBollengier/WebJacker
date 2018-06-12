@@ -40,7 +40,7 @@ try:
     report_output.append(functions.dns_dump(url, 'MX'))
     report_output.append(functions.dns_dump(url, 'HINFO'))
     report_output.append('## Port Scan')
-    open_ports = functions.simple_portscan(url, 1025)
+    open_ports = functions.simple_portscan(url)
     for line in open_ports:
         report_output.append("\t"+line+"\n")
     report_output.append('********')
