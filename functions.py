@@ -1,7 +1,7 @@
 import dns.resolver
 from socket import *
 from typing import *
-from port_list import PortList
+from DBFunctions import DBFunctions
 
 
 def dns_dump(url, record):
@@ -27,13 +27,12 @@ def simple_portscan(url):
     :param port_range: max ports to be scanned
     :return List of strings containing open ports.
     """
-    # TODO Multithreading for performance
     remote_host_ip = gethostbyname(url)
-    port_list = PortList()
-    port_dict = port_list.get_port_dict()
+    db_functions = DBFunctions()
+    ports_services = db_functions.get_ports()
     print("Scanning: " + str(remote_host_ip))
     open_ports = []
-    for port, service in port_dict.items():
+    for (port, service) in ports_services:
         s = socket(AF_INET, SOCK_STREAM)
         s.settimeout(0.05)
         result = s.connect_ex((remote_host_ip, port))

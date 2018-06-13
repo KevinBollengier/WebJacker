@@ -1,5 +1,4 @@
 import requests
-import socket
 import sys
 import functions
 
