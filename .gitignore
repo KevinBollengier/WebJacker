@@ -2,5 +2,4 @@ __pycache__/
 .idea/ 
 venv/ 
 test.md
-test.txt
-DBConnection.py
+env.json

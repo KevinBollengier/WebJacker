@@ -6,7 +6,7 @@ class DBFunctions:
     db_instance = DBConnection()
     db_connection = db_instance.return_connection()
 
-    def get_ports(self)->List[(int, str)]:
+    def get_ports(self)->List[Tuple[int, str]]:
         """
         Function that retrieves port list with services from DB
         :return: List of tuples in format (port, service)
