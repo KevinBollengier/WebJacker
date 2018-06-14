@@ -20,3 +20,12 @@ class DBFunctions:
             row = cursor.fetchone()
         return port_services
 
+    def get_websites(self)->List[str]:
+        cursor = self.db_connection.cursor()
+        cursor.execute('Select URL from Websites')
+        web_urls = []
+        row = cursor.fetchone()
+        while row:
+            web_urls.append(row[0])
+            row = cursor.fetchone()
+        return web_urls
