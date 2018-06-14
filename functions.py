@@ -27,7 +27,22 @@ def verify_https(file, url: str):
             output.write('\tHSTS : No' + '\n')
     except requests.exceptions.SSLError:
         output.write('\tHTTPS : Errors with HTTPS certificate.\n')
-    pass
+    output.close()
+
+
+def get_headers(file, url: str):
+    output = open(file, 'a')
+    try:
+        r = requests.get('https://' + url, verify=True)
+        output.write('## Request Headers\n')
+        for header in r.request.headers:
+            output.write('\t' + header + ' : ' + r.request.headers[header] + '\n')
+        output.write('## Response Headers\n')
+        for header in r.headers:
+            output.write('\t' + header + ' : ' + r.headers[header] + '\n')
+        output.close()
+    except requests.exceptions.SSLError:
+        pass
 
 
 def dns_dump(url, record):
