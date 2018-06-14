@@ -7,6 +7,7 @@ from DBFunctions import DBFunctions
 
 
 def get_info(file, url: str):
+    print('Getting general info...')
     output = open(file, 'a')
     r = requests.get(url="http://" + url)
     output.write('# W3bJ4ck3r Report -' + url + '\n')
@@ -17,6 +18,7 @@ def get_info(file, url: str):
 
 
 def verify_https(file, url: str):
+    print('Verifying https...')
     output = open(file, 'a')
     try:
         r = requests.get(url="https://" + url, verify=True)
@@ -31,6 +33,7 @@ def verify_https(file, url: str):
 
 
 def get_headers(file, url: str):
+    print('Grabbing http headers...')
     output = open(file, 'a')
     try:
         r = requests.get('https://' + url, verify=True)
@@ -42,23 +45,38 @@ def get_headers(file, url: str):
             output.write('\t' + header + ' : ' + r.headers[header] + '\n')
         output.close()
     except requests.exceptions.SSLError:
-        pass
+        output.close()
 
 
-def dns_dump(url, record):
+def get_dns_info(url, record):
     """
     Function that queries DNS records based on url and the type of record provided in the parameters
     :param url: the url that needs to be queried
     :param record: Type of DNS record to query
     """
+    # TODO: bug with return, probably should return a list of records
     try:
-        cname_records = dns.resolver.query(url, record)
-        for cname_record in cname_records:
-            return "\t{dns_record} : ".format(dns_record=record) + str(cname_record)
+        answer = dns.resolver.query(url, record)
+        for data in answer:
+            print('Found ' + str(len(answer)) + ' ' + str(record) + ' records.')
+            return "\t{dns_record} : ".format(dns_record=record) + str(data)
     except dns.resolver.NoAnswer:
         return "\t{dns_record} : No information.".format(dns_record=record)
     except dns.resolver.NoNameservers:
         return "\tShit happened."
+
+
+def dns_dump(file, url):
+    record_names = ['CNAME', 'SOA', 'A', 'NS', 'MX', 'HINFO']
+    output = open(file, 'a')
+    output.write('## DNS Dump')
+    dns_records = []
+    for record_name in record_names:
+            dns_records.append(get_dns_info(url, record_name))
+    for dns_record in dns_records:
+        # output.write(dns_record)
+        print(dns_record)
+    output.close()
 
 
 def simple_portscan(url):

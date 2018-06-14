@@ -17,6 +17,7 @@ def main():
         functions.get_info(test, url)
         functions.verify_https(test, url)
         functions.get_headers(test, url)
+        functions.dns_dump(test, url)
         # report_output.append('## DNS Dump ')
         # report_output.append(functions.dns_dump(url, 'CNAME'))
         # report_output.append(functions.dns_dump(url, 'SOA'))
