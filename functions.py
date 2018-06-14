@@ -55,15 +55,22 @@ def get_dns_info(url, record):
     :param record: Type of DNS record to query
     """
     # TODO: bug with return, probably should return a list of records
+    dns_records = []
     try:
         answer = dns.resolver.query(url, record)
+        print('Found ' + str(len(answer)) + ' ' + str(record) + ' record(s).')
+
         for data in answer:
-            print('Found ' + str(len(answer)) + ' ' + str(record) + ' records.')
-            return "\t{dns_record} : ".format(dns_record=record) + str(data)
+            dns_records.append("\t{dns_record} : ".format(dns_record=record) + str(data))
+            # print("\t{dns_record} : ".format(dns_record=record) + str(data))
+            # return "\t{dns_record} : ".format(dns_record=record) + str(data)
+        return dns_records
     except dns.resolver.NoAnswer:
-        return "\t{dns_record} : No information.".format(dns_record=record)
+        dns_records.append("\t{dns_record} : No information.".format(dns_record=record))
+        return dns_records
     except dns.resolver.NoNameservers:
-        return "\tShit happened."
+        dns_records.append("\tShit happened.")
+        return dns_records
 
 
 def dns_dump(file, url):
@@ -74,12 +81,12 @@ def dns_dump(file, url):
     for record_name in record_names:
             dns_records.append(get_dns_info(url, record_name))
     for dns_record in dns_records:
-        # output.write(dns_record)
-        print(dns_record)
+        for subrecord in dns_record:
+            output.write(subrecord+'\n')
     output.close()
 
 
-def simple_portscan(url):
+def simple_port_scan(url):
     """
     Simple portscan to see if a port is open
     :param url: host to be scanned
