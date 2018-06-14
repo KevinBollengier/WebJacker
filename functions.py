@@ -1,8 +1,6 @@
 import dns.resolver
 import requests
-import typing
 from socket import *
-from typing import *
 from DBFunctions import DBFunctions
 
 
@@ -10,7 +8,7 @@ def get_info(file, url: str):
     print('Getting general info...')
     output = open(file, 'a')
     r = requests.get(url="http://" + url)
-    output.write('# W3bJ4ck3r Report -' + url + '\n')
+    output.write('# W3bJ4ck3r Report - ' + url + '\n')
     output.write('## General information'+'\n')
     output.write('\tURL : ' + url + '\n')
     output.write('\tStatus Code: ' + str(r.status_code) + '\n')
