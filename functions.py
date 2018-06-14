@@ -76,7 +76,7 @@ def get_dns_info(url, record):
 def dns_dump(file, url):
     record_names = ['CNAME', 'SOA', 'A', 'NS', 'MX', 'HINFO']
     output = open(file, 'a')
-    output.write('## DNS Dump')
+    output.write('## DNS Dump\n')
     dns_records = []
     for record_name in record_names:
             dns_records.append(get_dns_info(url, record_name))
@@ -86,30 +86,28 @@ def dns_dump(file, url):
     output.close()
 
 
-def simple_port_scan(url):
+def simple_port_scan(file, url):
     """
     Simple portscan to see if a port is open
     :param url: host to be scanned
     :return List of strings containing open ports.
     """
+    output = open(file, 'a')
     remote_host_ip = gethostbyname(url)
     db_functions = DBFunctions()
     ports_services = db_functions.get_ports()
+    output.write('## Port Scan\n')
     print("Scanning: " + str(remote_host_ip))
-    open_ports = []
+    # open_ports = []
+    amount_open_ports = 0
     for (port, service) in ports_services:
         s = socket(AF_INET, SOCK_STREAM)
         s.settimeout(0.05)
         result = s.connect_ex((remote_host_ip, port))
         if result == 0:
-            open_ports.append("Port {port}: \t open    {service}".format(port=port, service=service))
+            output.write("\tPort {port}: \t open    {service}".format(port=port, service=service) + '\n')
+            amount_open_ports = amount_open_ports + 1
         s.close()
-    return open_ports
-
-
-def print_to_md_file(text: List[str]):
-    file = open("test.md", "w")
-    for line in text:
-        file.write(line+"\n")
-    file.close()
-    pass
+    print(url + ' has {nrPorts} open port(s).'.format(nrPorts=str(amount_open_ports)))
+    output.write("****")
+    output.close()

@@ -1,29 +1,19 @@
-import requests
 import sys
 import functions
 
 # TODO refactor to commandline arguments
 # TODO refactor static file name
-# TODO make program more verbose
-# TODO clean up code
 
 
 def main():
     try:
-        # report_output = []
-
         url = input("Enter website to test:")
         test = "reports/filename.md"
         functions.get_info(test, url)
         functions.verify_https(test, url)
         functions.get_headers(test, url)
         functions.dns_dump(test, url)
-        # report_output.append('## Port Scan')
-        # open_ports = functions.simple_portscan(url)
-        # for line in open_ports:
-        #     report_output.append("\t" + line + "\n")
-        # report_output.append('********')
-        # functions.print_to_md_file(report_output)
+        functions.simple_port_scan(test, url)
     except KeyboardInterrupt:
         print("[*] User requested an interrupt")
         print("[*] Shutting down")
