@@ -1,7 +1,33 @@
 import dns.resolver
+import requests
+import typing
 from socket import *
 from typing import *
 from DBFunctions import DBFunctions
+
+
+def get_info(file, url: str):
+    output = open(file, 'a')
+    r = requests.get(url="http://" + url)
+    output.write('# W3bJ4ck3r Report -' + url + '\n')
+    output.write('## General information'+'\n')
+    output.write('\tURL : ' + url + '\n')
+    output.write('\tStatus Code: ' + str(r.status_code) + '\n')
+    output.close()
+
+
+def verify_https(file, url: str):
+    output = open(file, 'a')
+    try:
+        r = requests.get(url="https://" + url, verify=True)
+        output.write('\tHTTPS : OK' + '\n')
+        if 'strict-transport-security' in r.headers:
+            output.write('\tHSTS : Yes' + '\n')
+        else:
+            output.write('\tHSTS : No' + '\n')
+    except requests.exceptions.SSLError:
+        output.write('\tHTTPS : Errors with HTTPS certificate.\n')
+    pass
 
 
 def dns_dump(url, record):
@@ -24,7 +50,6 @@ def simple_portscan(url):
     """
     Simple portscan to see if a port is open
     :param url: host to be scanned
-    :param port_range: max ports to be scanned
     :return List of strings containing open ports.
     """
     remote_host_ip = gethostbyname(url)
