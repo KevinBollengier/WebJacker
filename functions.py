@@ -17,6 +17,15 @@ def get_info(file, url: str):
 # TODO: verify if clickjacking is possible
 
 
+def check_clickjacking(file, url: str):
+    # get headers
+    # check if CSP/X-frame-options is in the headers
+    # write faulties to database
+    # write faulties to report
+    # close report file
+    pass
+
+
 def verify_https(file, url: str):
     print('Verifying https...')
     db_func = DBFunctions()
