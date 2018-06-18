@@ -3,14 +3,16 @@ import functions
 from DBFunctions import DBFunctions
 
 # TODO refactor file name reporting with date time
+# TODO add length of scan
 
 
 def main():
     database = DBFunctions()
     websites = database.get_websites()
+    database.trunc_error_table()
     for url in websites:
         try:
-            # url = input("Enter website to test:")
+            print("Webjacking : {url}".format(url=url))
             test = "reports/{url}.md".format(url=url)
             functions.get_info(test, url)
             functions.verify_https(test, url)

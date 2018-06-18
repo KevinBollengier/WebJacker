@@ -14,9 +14,12 @@ def get_info(file, url: str):
     output.write('\tStatus Code: ' + str(r.status_code) + '\n')
     output.close()
 
+# TODO: verify if clickjacking is possible
+
 
 def verify_https(file, url: str):
     print('Verifying https...')
+    db_func = DBFunctions()
     output = open(file, 'a')
     try:
         r = requests.get(url="https://" + url, verify=True)
@@ -27,6 +30,7 @@ def verify_https(file, url: str):
             output.write('\tHSTS : No' + '\n')
     except requests.exceptions.SSLError:
         output.write('\tHTTPS : Errors with HTTPS certificate.\n')
+        db_func.insert_https_error(url)
     output.close()
 
 
@@ -60,8 +64,6 @@ def get_dns_info(url, record):
 
         for data in answer:
             dns_records.append("\t{dns_record} : ".format(dns_record=record) + str(data))
-            # print("\t{dns_record} : ".format(dns_record=record) + str(data))
-            # return "\t{dns_record} : ".format(dns_record=record) + str(data)
         return dns_records
     except dns.resolver.NoAnswer:
         dns_records.append("\t{dns_record} : No information.".format(dns_record=record))
@@ -87,8 +89,8 @@ def dns_dump(file, url):
 def simple_port_scan(file, url):
     """
     Simple portscan to see if a port is open
+    :param file: filename
     :param url: host to be scanned
-    :return List of strings containing open ports.
     """
     output = open(file, 'a')
     remote_host_ip = gethostbyname(url)
