@@ -8,8 +8,9 @@ from DBFunctions import DBFunctions
 
 def main():
     database = DBFunctions()
-    websites = database.get_websites()
-    database.trunc_error_table()
+    # websites = database.get_websites()
+    websites = ["www.brightfish.be", "www.kinepolis.be"]
+    database.trunc_error_tables()
     for url in websites:
         try:
             print("Webjacking : {url}".format(url=url))
@@ -17,6 +18,7 @@ def main():
             functions.get_info(test, url)
             functions.verify_https(test, url)
             functions.get_headers(test, url)
+            functions.check_clickjacking(test, url)
             functions.dns_dump(test, url)
             functions.simple_port_scan(test, url)
         except KeyboardInterrupt:
