@@ -35,6 +35,7 @@ class DBFunctions:
         cursor = conn.cursor()
         cursor.execute('Truncate table HttpsErrors')
         cursor.execute('Truncate table Clickjack_Websites')
+        cursor.execute('Truncate table Websites_Status_Codes')
         conn.commit()
 
     def insert_https_error(self, url):
@@ -47,4 +48,10 @@ class DBFunctions:
         conn = self.db_connection
         cursor = conn.cursor()
         cursor.execute("insert into Clickjack_Websites VALUES (%s)", url)
+        conn.commit()
+
+    def insert_web_status(self, url, code):
+        conn = self.db_connection
+        cursor = conn.cursor()
+        cursor.execute("insert into Websites_Status_Codes VALUES (%s, %s)", (url, code))
         conn.commit()

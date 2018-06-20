@@ -12,7 +12,6 @@ import shutil
 def main():
     database = DBFunctions()
     websites = database.get_websites()
-    # websites = ["www.brightfish.be", "www.kinepolis.be"]
     database.trunc_error_tables()
 
     folder = "reports/{date}".format(date=datetime.today().strftime('%d-%m-%y'))

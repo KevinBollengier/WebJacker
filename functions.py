@@ -7,14 +7,20 @@ from DBFunctions import DBFunctions
 def get_info(file, url: str):
     print('Getting general info...')
     output = open(file, 'a')
+    db_func = DBFunctions()
     try:
         r = requests.get(url="http://" + url)
         output.write('# W3bJ4ck3r Report - ' + url + '\n')
         output.write('## General information'+'\n')
         output.write('\tURL : ' + url + '\n')
         output.write('\tStatus Code: ' + str(r.status_code) + '\n')
+        db_func.insert_web_status(url, r.status_code)
     except requests.exceptions.ConnectionError:
         output.write('\tStatus Code : No connection could be made because the target machine actively refused it.')
+        db_func.insert_web_status(url, 666)
+    except ConnectionResetError:
+        output.write('\tStatus Code : An existing connection was forcibly closed by the remote host.')
+        db_func.insert_web_status(url, 666)
     output.close()
 
 
@@ -31,7 +37,8 @@ def check_clickjacking(file, url: str):
             output.write('\tVulnerable to clickjacking : Yes\n')
             db_functions.insert_clickjack_website(url)
     except requests.exceptions.SSLError:
-        print('SSL Exception during clicjack verification...')
+        print('SSL Exception during clickjack verification...')
+    output.close()
 
 
 def verify_https(file, url: str):
@@ -64,11 +71,11 @@ def get_headers(file, url: str):
         output.write('## Response Headers\n')
         for header in r.headers:
             output.write('\t' + header + ' : ' + r.headers[header] + '\n')
-        output.close()
     except requests.exceptions.SSLError:
         output.close()
     except requests.exceptions.ConnectionError:
         output.close()
+    output.close()
 
 
 def get_dns_info(url, record):
