@@ -17,8 +17,6 @@ def get_info(file, url: str):
         output.write('\tStatus Code : No connection could be made because the target machine actively refused it.')
     output.close()
 
-# TODO: verify if clickjacking is possible
-
 
 def check_clickjacking(file, url: str):
     print('Checking for clickjacking ...')
