@@ -1,6 +1,7 @@
 import sys
 import functions
 from DBFunctions import DBFunctions
+import datetime
 
 # TODO refactor file name reporting with date time
 # TODO add length of scan
@@ -8,13 +9,12 @@ from DBFunctions import DBFunctions
 
 def main():
     database = DBFunctions()
-    # websites = database.get_websites()
-    websites = ["www.brightfish.be", "www.kinepolis.be"]
+    websites = database.get_websites()
     database.trunc_error_tables()
     for url in websites:
         try:
             print("Webjacking : {url}".format(url=url))
-            test = "reports/{url}.md".format(url=url)
+            test = "reports/{date}/{url}.md".format(date=datetime.datetime.today().strftime('%d-%m-%y'), url=url)
             functions.get_info(test, url)
             functions.verify_https(test, url)
             functions.get_headers(test, url)

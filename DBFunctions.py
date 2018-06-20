@@ -47,4 +47,4 @@ class DBFunctions:
         conn = self.db_connection
         cursor = conn.cursor()
         cursor.execute("insert into Clickjack_Websites VALUES (%s)", url)
-        pass
+        conn.commit()

@@ -26,15 +26,14 @@ def check_clickjacking(file, url: str):
     db_functions = DBFunctions()
     try:
         r = requests.get(url="https://" + url, verify=True)
-        print(r.headers)
+        # print(r.headers)
         if 'X-Frame-Options' in r.headers.keys() or 'Content-Security-Policy' in r.headers.keys():
             output.write('\tVulnerable to clickjacking : NO\n')
         else:
             output.write('\tVulnerable to clickjacking : Yes\n')
-
+            db_functions.insert_clickjack_website(url)
     except requests.exceptions.SSLError:
         print('SSL Exception during clicjack verification...')
-        db_functions.insert_clickjack_website(url)
 
 
 def verify_https(file, url: str):
