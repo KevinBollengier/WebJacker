@@ -1,24 +1,49 @@
 import dns.resolver
 import requests
-import typing
 from socket import *
-from typing import *
 from DBFunctions import DBFunctions
 
 
 def get_info(file, url: str):
     print('Getting general info...')
     output = open(file, 'a')
-    r = requests.get(url="http://" + url)
-    output.write('# W3bJ4ck3r Report -' + url + '\n')
-    output.write('## General information'+'\n')
-    output.write('\tURL : ' + url + '\n')
-    output.write('\tStatus Code: ' + str(r.status_code) + '\n')
+    db_func = DBFunctions()
+    try:
+        r = requests.get(url="http://" + url)
+        output.write('# W3bJ4ck3r Report - ' + url + '\n')
+        output.write('## General information'+'\n')
+        output.write('\tURL : ' + url + '\n')
+        output.write('\tStatus Code: ' + str(r.status_code) + '\n')
+        db_func.insert_web_status(url, r.status_code)
+    except requests.exceptions.ConnectionError:
+        output.write('\tStatus Code : No connection could be made because the target machine actively refused it.')
+        db_func.insert_web_status(url, 666)
+    except ConnectionResetError:
+        output.write('\tStatus Code : An existing connection was forcibly closed by the remote host.')
+        db_func.insert_web_status(url, 666)
+    output.close()
+
+
+def check_clickjacking(file, url: str):
+    print('Checking for clickjacking ...')
+    output = open(file, 'a')
+    db_functions = DBFunctions()
+    try:
+        r = requests.get(url="https://" + url, verify=True)
+        # print(r.headers)
+        if 'X-Frame-Options' in r.headers.keys() or 'Content-Security-Policy' in r.headers.keys():
+            output.write('\tVulnerable to clickjacking : NO\n')
+        else:
+            output.write('\tVulnerable to clickjacking : Yes\n')
+            db_functions.insert_clickjack_website(url)
+    except requests.exceptions.SSLError:
+        print('SSL Exception during clickjack verification...')
     output.close()
 
 
 def verify_https(file, url: str):
     print('Verifying https...')
+    db_func = DBFunctions()
     output = open(file, 'a')
     try:
         r = requests.get(url="https://" + url, verify=True)
@@ -29,6 +54,9 @@ def verify_https(file, url: str):
             output.write('\tHSTS : No' + '\n')
     except requests.exceptions.SSLError:
         output.write('\tHTTPS : Errors with HTTPS certificate.\n')
+        db_func.insert_https_error(url)
+    except requests.exceptions.ConnectionError:
+        print("No connection, machine refused it.")
     output.close()
 
 
@@ -43,9 +71,11 @@ def get_headers(file, url: str):
         output.write('## Response Headers\n')
         for header in r.headers:
             output.write('\t' + header + ' : ' + r.headers[header] + '\n')
-        output.close()
     except requests.exceptions.SSLError:
         output.close()
+    except requests.exceptions.ConnectionError:
+        output.close()
+    output.close()
 
 
 def get_dns_info(url, record):
@@ -54,7 +84,6 @@ def get_dns_info(url, record):
     :param url: the url that needs to be queried
     :param record: Type of DNS record to query
     """
-    # TODO: bug with return, probably should return a list of records
     dns_records = []
     try:
         answer = dns.resolver.query(url, record)
@@ -62,8 +91,6 @@ def get_dns_info(url, record):
 
         for data in answer:
             dns_records.append("\t{dns_record} : ".format(dns_record=record) + str(data))
-            # print("\t{dns_record} : ".format(dns_record=record) + str(data))
-            # return "\t{dns_record} : ".format(dns_record=record) + str(data)
         return dns_records
     except dns.resolver.NoAnswer:
         dns_records.append("\t{dns_record} : No information.".format(dns_record=record))
@@ -76,6 +103,7 @@ def get_dns_info(url, record):
 def dns_dump(file, url):
     record_names = ['CNAME', 'SOA', 'A', 'NS', 'MX', 'HINFO']
     output = open(file, 'a')
+    print('Grabbing DNS records')
     output.write('## DNS Dump\n')
     dns_records = []
     for record_name in record_names:
@@ -89,8 +117,8 @@ def dns_dump(file, url):
 def simple_port_scan(file, url):
     """
     Simple portscan to see if a port is open
+    :param file: filename
     :param url: host to be scanned
-    :return List of strings containing open ports.
     """
     output = open(file, 'a')
     remote_host_ip = gethostbyname(url)

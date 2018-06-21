@@ -12,7 +12,7 @@ class DBFunctions:
         :return: List of tuples in format (port, service)
         """
         cursor = self.db_connection.cursor()
-        cursor.execute('SELECT * FROM TST')
+        cursor.execute('SELECT * FROM PortsServices')
         port_services = []
         row = cursor.fetchone()
         while row:
@@ -29,3 +29,29 @@ class DBFunctions:
             web_urls.append(row[0])
             row = cursor.fetchone()
         return web_urls
+
+    def trunc_error_tables(self):
+        conn = self.db_connection
+        cursor = conn.cursor()
+        cursor.execute('Truncate table HttpsErrors')
+        cursor.execute('Truncate table Clickjack_Websites')
+        cursor.execute('Truncate table Websites_Status_Codes')
+        conn.commit()
+
+    def insert_https_error(self, url):
+        conn = self.db_connection
+        cursor = conn.cursor()
+        cursor.execute("insert into HttpsErrors VALUES (%s)", url)
+        conn.commit()
+
+    def insert_clickjack_website(self, url):
+        conn = self.db_connection
+        cursor = conn.cursor()
+        cursor.execute("insert into Clickjack_Websites VALUES (%s)", url)
+        conn.commit()
+
+    def insert_web_status(self, url, code):
+        conn = self.db_connection
+        cursor = conn.cursor()
+        cursor.execute("insert into Websites_Status_Codes VALUES (%s, %s)", (url, code))
+        conn.commit()
